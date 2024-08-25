@@ -17,7 +17,7 @@
 /**
  * Plugin strings are defined here.
  *
- * @package     assignfeedback_aiprocess
+ * @package     assignfeedback_aif *
  * @category    string
  * @copyright   2024 Marcus Green
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
