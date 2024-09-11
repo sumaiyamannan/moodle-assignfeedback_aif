@@ -24,5 +24,11 @@
  */
 
 defined('MOODLE_INTERNAL') || die();
+$string['enabled'] = 'Enabled';
+$string['enabled_help'] = 'Enabled Help xxx';
+$string['pluginname'] = 'AI Assisted Feedback';
+$string['prompt'] = 'Prompt';
+$string['prompt_help'] = 'Prompt help XXXX XXXX XXXX XXX';
+$string['file'] = 'File';
+$string['file_help'] = 'File help XXXX XXXX XXXX XXX';
 
-$string['pluginname'] = 'AI Feedback';

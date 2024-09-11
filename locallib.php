@@ -33,7 +33,42 @@ class assign_feedback_aif extends assign_feedback_plugin {
     }
 
     /**
-     * Has the comment feedback been modified?
+     * Get the default setting for feedback comments plugin
+     *
+     * @param MoodleQuickForm $mform The form to add elements to
+     * @return void
+     */
+    public function get_settings(MoodleQuickForm $mform) {
+        xdebug_break();
+        $default = $this->get_config('prompt');
+        if (empty($default)) {
+            // Apply the admin default if we don't have a value yet.
+            $default = get_config('assignfeedback_aif', 'prompt');
+        }
+
+        $mform->addElement('textarea',
+                        'assignfeedback_aif_prompt',
+                        get_string('prompt', 'assignfeedback_aif'),
+                        ['size' => 70, 'rows' => 10]
+                        );
+        $mform->setDefault('assignfeedback_aif_prompt', $default);
+
+        $mform->addElement('filemanager', // or 'file' for simpler file selection
+                        'assignfeedback_aif_file',
+                        get_string('file', 'assignfeedback_aif'), // label for file selection
+                        ['maxfiles' => 1, 'maxfilesize' => '10MB'] // adjust as needed
+                        );
+
+
+        $mform->addHelpButton('assignfeedback_aif_prompt', 'prompt', 'assignfeedback_aif');
+        // Disable Prompt if AI assisted feedback if comment feedback plugin is disabled.
+        $mform->hideIf('assignfeedback_aif_prompt', 'assignfeedback_aif_enabled', 'notchecked');
+
+        $mform->addHelpButton('assignfeedback_aif_file', 'file', 'assignfeedback_aif');
+        $mform->hideIf('assignfeedback_aif_file', 'assignfeedback_aif_enabled', 'notchecked');
+    }
+    /**
+     * Has the comment feedback been modified   ?
      *
      * @param stdClass $grade The grade object.
      * @param stdClass $data Data from the form submission.
@@ -120,7 +155,17 @@ class assign_feedback_aif extends assign_feedback_plugin {
         }
         return true;
     }
-
+    /**
+     * Save the settings for feedback comments plugin
+     *
+     * @param stdClass $data
+     * @return bool
+     */
+    public function save_settings(stdClass $data) {
+        xdebug_break();
+        $this->set_config('prompt', $data->assignfeedback_aif_prompt);
+        return true;
+    }
     /**
      * Saving the comment content into database.
      *
@@ -130,7 +175,7 @@ class assign_feedback_aif extends assign_feedback_plugin {
      */
     public function save(stdClass $grade, stdClass $data) {
         global $DB;
-
+        xdebug_break();
         $feedback = $DB->get_record('assignfeedback_aif', ['grade' => $grade->id]);
         if ($feedback) {
             $feedback->value = $data->assignfeedbackaif;
