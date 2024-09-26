@@ -24,11 +24,10 @@
  */
 
 defined('MOODLE_INTERNAL') || die();
-$string['enabled'] = 'Enabled';
-$string['enabled_help'] = 'Enabled Help xxx';
+$string['default_help'] = 'The plugin will be enabled by default when a new assignment is created';
+$string['enabledbydefault'] = 'Enabled by default';
 $string['pluginname'] = 'AI Assisted Feedback';
 $string['prompt'] = 'Prompt';
-$string['prompt_help'] = 'Prompt help XXXX XXXX XXXX XXX';
-$string['file'] = 'File';
-$string['file_help'] = 'File help XXXX XXXX XXXX XXX';
+$string['prompt_setting'] = 'Analyse the grammar in this text';
+$string['prompt_text'] = 'The default prompt that will be added to a new instance';
 

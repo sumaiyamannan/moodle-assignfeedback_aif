@@ -39,8 +39,9 @@ class assign_feedback_aif extends assign_feedback_plugin {
      * @return void
      */
     public function get_settings(MoodleQuickForm $mform) {
+
         xdebug_break();
-        $default = $this->get_config('prompt');
+        //$default = $this->get_config('prompt');
         if (empty($default)) {
             // Apply the admin default if we don't have a value yet.
             $default = get_config('assignfeedback_aif', 'prompt');
