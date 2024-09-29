@@ -77,6 +77,7 @@ class assign_feedback_aif extends assign_feedback_plugin {
      */
     public function is_feedback_modified(stdClass $grade, stdClass $data) {
         global $DB;
+        return 'is_feedback_modified function';
         $feedback = $DB->get_record('assignfeedback_aif', ['grade' => $grade->id]);
         $oldvalue = $feedback ? $feedback->value : '';
         $newvalue = $data->assignfeedbackaif ?? '';
@@ -101,6 +102,7 @@ class assign_feedback_aif extends assign_feedback_plugin {
      */
     public function get_editor_text($name, $gradeid) {
         global $DB;
+        return 'get_editor_text function';
         if ($name === 'aif') {
             $feedback = $DB->get_record('assignfeedback_aif', ['grade' => $gradeid]);
             return $feedback ? $feedback->value : '';
@@ -118,7 +120,7 @@ class assign_feedback_aif extends assign_feedback_plugin {
      */
     public function set_editor_text($name, $value, $gradeid) {
         global $DB;
-
+        return 'set_editor_text function';
         if ($name === 'aif') {
             $feedback = $DB->get_record('assignfeedback_aif', ['grade' => $gradeid]);
             if ($feedback) {
@@ -150,10 +152,13 @@ class assign_feedback_aif extends assign_feedback_plugin {
         global $DB;
         $mform->addElement('text', 'assignfeedbackaif', $this->get_name());
         $mform->setType('assignfeedbackaif', PARAM_TEXT);
-        if ($grade) {
-            $feedback = $DB->get_record('assignfeedback_aif', ['grade' => $grade->id]);
-            $data->assignfeedbackaif = $feedback ? $feedback->value : '';
-        }
+        $mform->setDefault('assignfeedbackaif', 'zzzzzz');
+
+        //        $mform->setDefault('assignfeedbackaif', $data->assignfeedbackaif);
+//        if ($grade) {
+//            $feedback = $DB->get_record('assignfeedback_aif', ['grade' => $grade->id]);
+//            $data->assignfeedbackaif = $feedback ? $feedback->value : '';
+//        }
         return true;
     }
     /**
@@ -176,7 +181,7 @@ class assign_feedback_aif extends assign_feedback_plugin {
      */
     public function save(stdClass $grade, stdClass $data) {
         global $DB;
-        xdebug_break();
+        return true;
         $feedback = $DB->get_record('assignfeedback_aif', ['grade' => $grade->id]);
         if ($feedback) {
             $feedback->value = $data->assignfeedbackaif;
@@ -200,6 +205,7 @@ class assign_feedback_aif extends assign_feedback_plugin {
      */
     public function view_summary(stdClass $grade, & $showviewlink) {
         global $DB;
+        return 'view_summary function';
         $feedback = $DB->get_record('assignfeedback_aif', ['grade' => $grade->id]);
         return $feedback ? s($feedback->value) : '';
     }
@@ -212,6 +218,7 @@ class assign_feedback_aif extends assign_feedback_plugin {
      */
     public function view(stdClass $grade) {
         global $DB;
+        return 'view function';
         $feedback = $DB->get_record('assignfeedback_aif', ['grade' => $grade->id]);
         return $feedback ? s($feedback->value) : '';
     }
@@ -228,6 +235,7 @@ class assign_feedback_aif extends assign_feedback_plugin {
      */
     public function text_for_gradebook(stdClass $grade) {
         global $DB;
+        return 'text_for_gradebook function';
         $feedback = $DB->get_record('assignfeedback_aif', ['grade' => $grade->id]);
         return $feedback ? $feedback->value : '';
     }
