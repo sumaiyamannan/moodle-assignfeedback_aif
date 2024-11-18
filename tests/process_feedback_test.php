@@ -36,17 +36,51 @@ class process_feedback_test extends advanced_testcase {
 
     /**
      * Test the get_name method of the process_feedback task.
+     * @covers process_feedback
+     * @covers ::get_name
      */
-    public function test_get_name() {
+use advanced_testcase;
+use assignfeedback_aif\task\process_feedback;
+
+class process_feedback_test extends advanced_testcase {
+
+    public function test_get_name(): void {
+        $this->resetAfterTest(true);
+        $task = new process_feedback();
+        $this->assertEquals(get_string('taskprocessfeedback', 'assignfeedback_aif'), $task->get_name());
+    }
+
+    public function test_get_name_with_different_language(): void {
+        $this->resetAfterTest(true);
+        $task = new process_feedback();
+        $this->setCurrentLanguage('es');
+        $this->assertEquals(get_string('taskprocessfeedback', 'assignfeedback_aif'), $task->get_name());
+    }
+
+    public function test_get_name_returns_string(): void {
+        $this->resetAfterTest(true);
+        $task = new process_feedback();
+        $this->assertIsString($task->get_name());
+    }
+
+    public function test_get_name_not_empty(): void {
+        $this->resetAfterTest(true);
+        $task = new process_feedback();
+        $this->assertNotEmpty($task->get_name());
+    }
+}
         $this->resetAfterTest(true);
         $task = new process_feedback();
         $this->assertEquals(get_string('taskprocessfeedback', 'assignfeedback_aif'), $task->get_name());
     }
 
     /**
-     * Test the execute method of the process_feedback task.
+     * Run the executre method (called by cron)
+     *
+     * @covers ::process_feedback
+     * @covers ::execute
      */
-    public function test_execute() {
+    public function test_execute(): void {
         $this->resetAfterTest(true);
         $task = new process_feedback();
 
