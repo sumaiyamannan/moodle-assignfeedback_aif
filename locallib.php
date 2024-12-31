@@ -39,7 +39,6 @@ class assign_feedback_aif extends assign_feedback_plugin {
      * @return void
      */
     public function get_settings(MoodleQuickForm $mform) {
-        xdebug_break();
         //$default = $this->get_config('prompt');
         if (empty($default)) {
             // Apply the admin default if we don't have a value yet.
@@ -66,7 +65,14 @@ class assign_feedback_aif extends assign_feedback_plugin {
 
         $mform->addHelpButton('assignfeedback_aif_file', 'file', 'assignfeedback_aif');
         $mform->hideIf('assignfeedback_aif_file', 'assignfeedback_aif_enabled', 'notchecked');
-        $mform->setDefaults(['assignfeedback_aif_prompt' => 'xxxx']);
+
+        global $DB;
+        $id = optional_param('update', 0, PARAM_INT);
+
+        $record = $DB->get_record('assignfeedback_aif', ['assignment' => $id]);
+        xdebug_break();
+
+        $mform->setDefaults(['assignfeedback_aif_prompt' => $record->prompt]);
     }
 
     public function get_prompt()    {
