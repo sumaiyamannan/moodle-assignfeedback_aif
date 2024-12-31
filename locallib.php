@@ -40,7 +40,6 @@ class assign_feedback_aif extends assign_feedback_plugin {
      */
     public function get_settings(MoodleQuickForm $mform) {
 
-        xdebug_break();
         //$default = $this->get_config('prompt');
         if (empty($default)) {
             // Apply the admin default if we don't have a value yet.
@@ -154,11 +153,6 @@ class assign_feedback_aif extends assign_feedback_plugin {
         $mform->setType('assignfeedbackaif', PARAM_TEXT);
         $mform->setDefault('assignfeedbackaif', 'zzzzzz');
 
-        //        $mform->setDefault('assignfeedbackaif', $data->assignfeedbackaif);
-//        if ($grade) {
-//            $feedback = $DB->get_record('assignfeedback_aif', ['grade' => $grade->id]);
-//            $data->assignfeedbackaif = $feedback ? $feedback->value : '';
-//        }
         return true;
     }
     /**
@@ -168,7 +162,6 @@ class assign_feedback_aif extends assign_feedback_plugin {
      * @return bool
      */
     public function save_settings(stdClass $data) {
-        xdebug_break();
         $this->set_config('prompt', $data->assignfeedback_aif_prompt);
         return true;
     }
