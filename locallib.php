@@ -39,7 +39,7 @@ class assign_feedback_aif extends assign_feedback_plugin {
      * @return void
      */
     public function get_settings(MoodleQuickForm $mform) {
-
+        xdebug_break();
         //$default = $this->get_config('prompt');
         if (empty($default)) {
             // Apply the admin default if we don't have a value yet.
@@ -66,6 +66,25 @@ class assign_feedback_aif extends assign_feedback_plugin {
 
         $mform->addHelpButton('assignfeedback_aif_file', 'file', 'assignfeedback_aif');
         $mform->hideIf('assignfeedback_aif_file', 'assignfeedback_aif_enabled', 'notchecked');
+        $mform->setDefaults(['assignfeedback_aif_prompt' => 'xxxx']);
+    }
+
+    public function get_prompt()    {
+        global $DB;
+        xdebug_break();
+
+        $id = optional_param('id', 0, PARAM_INT);
+        $prompt = $DB->get_record('assignfeedback_aif', ['assignment' => $id]);
+        return $prompt;
+    }
+
+    public function data_preprocessing(&$defaultvalues) {
+        global $DB;
+        xdebug_break();
+        $id = optional_param('id', 0, PARAM_INT);
+        $prompt = $DB->get_record('assignfeedback_aif', ['assignment' => $id]);
+        $defaultvalues['assignfeedback_aif_prompt'] = $prompt->prompt;
+        return $defaultvalues;
     }
     /**
      * Has the comment feedback been modified   ?
@@ -101,6 +120,7 @@ class assign_feedback_aif extends assign_feedback_plugin {
      */
     public function get_editor_text($name, $gradeid) {
         global $DB;
+        xmldb_debug();
         return 'get_editor_text function';
         if ($name === 'aif') {
             $feedback = $DB->get_record('assignfeedback_aif', ['grade' => $gradeid]);
@@ -119,6 +139,7 @@ class assign_feedback_aif extends assign_feedback_plugin {
      */
     public function set_editor_text($name, $value, $gradeid) {
         global $DB;
+        xdebug_break();
         return 'set_editor_text function';
         if ($name === 'aif') {
             $feedback = $DB->get_record('assignfeedback_aif', ['grade' => $gradeid]);
@@ -162,7 +183,23 @@ class assign_feedback_aif extends assign_feedback_plugin {
      * @return bool
      */
     public function save_settings(stdClass $data) {
-        $this->set_config('prompt', $data->assignfeedback_aif_prompt);
+        global $DB;
+        $prompt = $data->assignfeedback_aif_prompt;
+        $assignment = $data->coursemodule;
+        $feedback = $DB->get_record('assignfeedback_aif', ['assignment' => $assignment]);
+        if($feedback) {
+            $feedback->prompt = $prompt;
+            $DB->update_record('assignfeedback_aif', $feedback);
+        } else {
+            $feedback = new stdClass();
+            $feedback->prompt = $prompt;
+            $feedback->assignment = $assignment;
+            $DB->insert_record('assignfeedback_aif', $feedback);
+        }
+
+       // $feedbackcomment = $this->get_feedback_comments($grade->id);
+
+       // $this->set_config('prompt', $data->assignfeedback_aif_prompt);
         return true;
     }
     /**
