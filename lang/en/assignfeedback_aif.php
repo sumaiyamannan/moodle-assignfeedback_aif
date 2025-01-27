@@ -35,4 +35,5 @@ $string['prompt'] = 'Prompt';
 $string['prompt_help'] = 'Prompt that will be sent to the remote LLM (E.G ChatGPT)';
 $string['prompt_setting'] = 'Analyse the grammar in this text';
 $string['prompt_text'] = 'The default prompt that will be added to a new instance';
+$string['processfeedbactask'] = 'Process feedback task';
 

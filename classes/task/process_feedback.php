@@ -33,13 +33,24 @@ class process_feedback extends \core\task\scheduled_task {
      * @return string
      */
     public function get_name() {
-        return get_string('taskprocessfeedback', 'assignfeedback_aif');
+        return get_string('processfeedbacktask', 'assignfeedback_aif');
     }
 
     /**
      * Execute the scheduled task.
      */
     public function execute() {
+        global $DB;
+
+         $sql = "SELECT *
+                 FROM {assign} a
+                 JOIN {course_modules} cm
+                 ON cm.instance = a.id J
+                 ON {assignfeedback_aif} aif
+                 ON aif.assignment = cm.id";
+        $assignments = $DB->get_records($sql);
+        //join with assign_submission
+        //foreach($assignments as $assignment)
         // Add your task execution code here.
         // For example:
         // $processor = new \assignfeedback_aif\feedback_processor();
