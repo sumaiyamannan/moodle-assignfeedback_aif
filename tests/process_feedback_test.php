@@ -78,6 +78,7 @@ class process_feedback_test extends advanced_testcase {
      */
     public function test_execute(): void {
         $this->resetAfterTest(true);
+
         $task = new process_feedback();
 
         // As the execute method is currently empty, we're just ensuring it runs without errors.

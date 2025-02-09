@@ -45,15 +45,10 @@ class process_feedback extends \core\task\scheduled_task {
          $sql = "SELECT *
                  FROM {assign} a
                  JOIN {course_modules} cm
-                 ON cm.instance = a.id J
-                 ON {assignfeedback_aif} aif
+                 ON cm.instance = a.id
+                 JOIN {assignfeedback_aif} aif
                  ON aif.assignment = cm.id";
-        $assignments = $DB->get_records($sql);
-        //join with assign_submission
-        //foreach($assignments as $assignment)
-        // Add your task execution code here.
-        // For example:
-        // $processor = new \assignfeedback_aif\feedback_processor();
-        // $processor->process_pending_feedback();
+        $assignments = $DB->get_records_sql($sql);
+
     }
 }
