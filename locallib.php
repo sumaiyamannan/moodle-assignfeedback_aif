@@ -202,10 +202,6 @@ class assign_feedback_aif extends assign_feedback_plugin {
             $feedback->assignment = $assignment;
             $DB->insert_record('assignfeedback_aif', $feedback);
         }
-
-       // $feedbackcomment = $this->get_feedback_comments($grade->id);
-
-       // $this->set_config('prompt', $data->assignfeedback_aif_prompt);
         return true;
     }
     /**

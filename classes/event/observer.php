@@ -44,8 +44,8 @@ class observer {
             $data->assignfeedbackcomments_editor = ['text' => $teachercommenttext, 'format' => FORMAT_MOODLE];
             $assign = $event->get_assign();
             $aif = $assign->get_feedback_plugins()[0];
-            $prompt = $aif->get_prompt();
+            //$prompt = $aif->get_prompt();
 
-            $assign->save_grade($USER->id, $data);
+            //$assign->save_grade($USER->id, $data);
         }
 }

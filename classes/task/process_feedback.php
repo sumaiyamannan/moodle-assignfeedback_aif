@@ -41,14 +41,22 @@ class process_feedback extends \core\task\scheduled_task {
      */
     public function execute() {
         global $DB;
-
          $sql = "SELECT *
                  FROM {assign} a
                  JOIN {course_modules} cm
                  ON cm.instance = a.id
                  JOIN {assignfeedback_aif} aif
-                 ON aif.assignment = cm.id";
+                 ON aif.assignment = cm.id
+                 JOIN {assign_submission} sub
+                 ON sub.assignment = a.id
+                 JOIN {assignsubmission_onlinetext} olt
+                 ON olt.assignment = a.id";
         $assignments = $DB->get_records_sql($sql);
+        $aif = new \assignfeedback_aif\aif();
+        xdebug_break();
+        foreach ($assignments as $assignment) {
+           $aif->perform_request($assignment->prompt);
+        }
 
     }
 }
