@@ -25,6 +25,8 @@ namespace assignfeedback_aif;
  */
 use \stdClass;
 class aif {
+    public  int $contextid;
+
     public function perform_request(string $prompt, string $purpose = 'feedback'): string {
             global $USER;
             $manager = new \core_ai\manager();
@@ -36,5 +38,8 @@ class aif {
             $llmresponse = $manager->process_action($action);
             $responsedata = $llmresponse->get_response_data();
             return $responsedata['generatedcontent'];
+        }
+        public function __construct($contextid) {
+            $this->contextid = $contextid;
         }
 }

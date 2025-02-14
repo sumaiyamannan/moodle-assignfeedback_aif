@@ -52,7 +52,7 @@ class process_feedback extends \core\task\scheduled_task {
                  JOIN {assignsubmission_onlinetext} olt
                  ON olt.assignment = a.id";
         $assignments = $DB->get_records_sql($sql);
-        $aif = new \assignfeedback_aif\aif();
+        $aif = new \assignfeedback_aif\aif(\context_system::instance()->id);
         xdebug_break();
         foreach ($assignments as $assignment) {
            $aif->perform_request($assignment->prompt);
