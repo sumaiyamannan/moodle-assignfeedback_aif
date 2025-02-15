@@ -41,7 +41,7 @@ class process_feedback extends \core\task\scheduled_task {
      */
     public function execute() {
         global $DB;
-         $sql = "SELECT *
+         $sql = "SELECT aif.id AS aifid, aif.prompt AS prompt,olt.onlinetext AS onlinetext, sub.id AS subid
                  FROM {assign} a
                  JOIN {course_modules} cm
                  ON cm.instance = a.id
@@ -50,12 +50,20 @@ class process_feedback extends \core\task\scheduled_task {
                  JOIN {assign_submission} sub
                  ON sub.assignment = a.id
                  JOIN {assignsubmission_onlinetext} olt
-                 ON olt.assignment = a.id";
+                 ON olt.assignment = a.id
+                 WHERE sub.status='submitted'";
         $assignments = $DB->get_records_sql($sql);
         $aif = new \assignfeedback_aif\aif(\context_system::instance()->id);
         xdebug_break();
         foreach ($assignments as $assignment) {
-           $aif->perform_request($assignment->prompt);
+          $prompt = $assignment->prompt . ' '.$assignment->onlinetext;
+          $aifeedback =  $aif->perform_request($prompt);
+          $data = (object) [
+            'aif' => $assignment->aifid,
+            'feedback' => $aifeedback,
+            'timecreated' => time(),
+            'submission' => $assignment->subid,
+          ];
         }
 
     }

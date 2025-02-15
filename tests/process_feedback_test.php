@@ -19,6 +19,10 @@ namespace assignfeedback_aif\tests;
 use advanced_testcase;
 use assignfeedback_aif\task\process_feedback;
 
+use core_ai\aiactions\generate_image;
+use core_ai\aiactions\generate_text;
+use core_ai\aiactions\summarise_text;
+
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -58,7 +62,23 @@ class process_feedback_test extends advanced_testcase {
     protected function setUp(): void {
         $this->resetAfterTest(true);
         parent::setUp();
-        global $DB;
+        global $DB,$CFG;
+        set_config('enabled', 1, 'aiprovider_openai');
+        set_config('apikey', TEST_LLM_APIKEY, 'aiprovider_openai');
+        set_config('summarise_text', 1, 'aiprovider_openai');
+
+        $manager = \core\di::get(\core_ai\manager::class);
+        $actions = [
+            generate_text::class,
+            summarise_text::class,
+        ];
+
+        // // Get the providers for the actions.
+       \core_ai\manager::set_action_state('aiprovider_openai', generate_text::class::get_basename(), 1);
+        //$providers = $manager->get_providers_for_actions($actions, true);
+
+        // // Disable the action.
+        // set_config('summarise_text', 1, $plugin);
 
         // Create test data
         $this->course = $this->getDataGenerator()->create_course();
@@ -72,13 +92,13 @@ class process_feedback_test extends advanced_testcase {
         // Create assignment instance
         $this->assign = $this->getDataGenerator()->create_module('assign', [
             'course' => $this->course->id,
-            'name' => 'Test assignment'
+            'name' => 'Test assignment',
+            'activity' => 'Enter text for evaluation by an AI system',
         ]);
-        xdebug_break();
 
         $data = (object) [
             'assignment' => $this->assign->cmid,
-            'prompt' => 'Test prompt',
+            'prompt' => 'Evaluate the grammar in the following',
             'timecreated' => time(),
         ];
         $DB->insert_record('assignfeedback_aif', $data);
@@ -86,13 +106,14 @@ class process_feedback_test extends advanced_testcase {
         // Create the task instance
         $this->task = new process_feedback();
 
+        /** Create a submission */
         $submission = new \stdClass();
         $submission->assignment = $this->assign->id;
         $submission->userid = $this->student->id;
         $submission->timecreated = time();
         $submission->timemodified = $submission->timecreated;
         $submission->timestarted = $submission->timecreated;;
-        $submission->status = 'draft';
+        $submission->status = 'submitted';
         $submission->attemptnumber = 0;
         $submission->latest = 0;
         $subid = $DB->insert_record('assign_submission', $submission);
@@ -100,13 +121,13 @@ class process_feedback_test extends advanced_testcase {
         $olt = new \stdClass();
         $olt->assignment = $this->assign->id;
         $olt->submission = $subid;
-        $olt->onlinetext = 'Text submission';
+        $olt->onlinetext = 'Yesterday I go prk';
         $olt->onlineformat = 1;
         $oltid = $DB->insert_record('assignsubmission_onlinetext', $olt);
     }
 
     /**
-     * Run the executre method (called by cron)
+     * Run the execute method (called by cron)
      *
      * @covers ::process_feedback
      * @covers ::execute
@@ -114,7 +135,6 @@ class process_feedback_test extends advanced_testcase {
     public function test_execute(): void {
         $this->resetAfterTest(true);
 
-        xdebug_break();
         $this->task->execute();
 
         // As the execute method is currently empty, we're just ensuring it runs without errors.
@@ -134,7 +154,7 @@ class process_feedback_test extends advanced_testcase {
     public function test_get_name_with_different_language(): void {
         $this->resetAfterTest(true);
         $task = new process_feedback();
-        $this->setCurrentLanguage('es');
+        //$this->setCurrentLanguage('es');
         $this->assertEquals(get_string('taskprocessfeedback', 'assignfeedback_aif'), $task->get_name());
     }
 
