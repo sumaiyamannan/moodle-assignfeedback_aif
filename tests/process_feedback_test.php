@@ -134,16 +134,14 @@ class process_feedback_test extends advanced_testcase {
      */
     public function test_execute(): void {
         $this->resetAfterTest(true);
+        global $DB;
 
+        $result = $DB->get_records('assignfeedback_aif_feedback');
+        $this->assertCount(0, $result);
         $this->task->execute();
+        $result = $DB->get_records('assignfeedback_aif_feedback');
+        $this->assertCount(1, $result);
 
-        // As the execute method is currently empty, we're just ensuring it runs without errors.
-        $this->assertNull($task->execute());
-
-        // Once you implement the execute method, you should add more specific tests here.
-        // For example:
-        // $this->assertTrue($task->execute());
-        // $this->assertDatabaseHas('assign_feedback', ['status' => 'processed']);
     }
     public function test_get_name(): void {
         $this->resetAfterTest(true);

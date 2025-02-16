@@ -54,7 +54,6 @@ class process_feedback extends \core\task\scheduled_task {
                  WHERE sub.status='submitted'";
         $assignments = $DB->get_records_sql($sql);
         $aif = new \assignfeedback_aif\aif(\context_system::instance()->id);
-        xdebug_break();
         foreach ($assignments as $assignment) {
           $prompt = $assignment->prompt . ' '.$assignment->onlinetext;
           $aifeedback =  $aif->perform_request($prompt);
@@ -64,6 +63,8 @@ class process_feedback extends \core\task\scheduled_task {
             'timecreated' => time(),
             'submission' => $assignment->subid,
           ];
+          xdebug_break();
+          $DB->insert_record('assignfeedback_aif_feedback', $data);
         }
 
     }
