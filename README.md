@@ -11,5 +11,4 @@ Assignment feedback plugin based on processing by an external AI/LLM system
 
 See the wiki for more information
 
-https://github.com/marcusgreen/moodle-assignfeedback_aif/wiki/Assignment-AI-Feedback
-
+https://github.com/marcusgreen/moodle-assignfeedback_aif/wiki
