@@ -39,18 +39,16 @@ class assign_feedback_aif extends assign_feedback_plugin {
      * @return void
      */
     public function get_settings(MoodleQuickForm $mform) {
-        //$default = $this->get_config('prompt');
-        if (empty($default)) {
-            // Apply the admin default if we don't have a value yet.
-            $default = get_config('assignfeedback_aif', 'prompt');
-        }
+        xdebug_break();
+
+        $defaultprompt = get_config('assignfeedback_aif', 'prompt');
 
         $mform->addElement('textarea',
                         'assignfeedback_aif_prompt',
                         get_string('prompt', 'assignfeedback_aif'),
                         ['size' => 70, 'rows' => 10]
                         );
-        $mform->setDefault('assignfeedback_aif_prompt', $default);
+        $mform->setDefault('assignfeedback_aif_prompt', $defaultprompt);
 
         $mform->addElement('filemanager', // or 'file' for simpler file selection
                         'assignfeedback_aif_file',
@@ -70,14 +68,14 @@ class assign_feedback_aif extends assign_feedback_plugin {
         $id = optional_param('update', 0, PARAM_INT);
 
         $record = $DB->get_record('assignfeedback_aif', ['assignment' => $id]);
-        xdebug_break();
+        if ($record) {
+            $mform->setDefault('assignfeedback_aif_prompt', $record->prompt);
+        }
 
-        $mform->setDefaults(['assignfeedback_aif_prompt' => $record->prompt]);
     }
 
     public function get_prompt()    {
         global $DB;
-        xdebug_break();
 
         $id = optional_param('id', 0, PARAM_INT);
         $prompt = $DB->get_record('assignfeedback_aif', ['assignment' => $id]);
@@ -86,7 +84,7 @@ class assign_feedback_aif extends assign_feedback_plugin {
 
     public function data_preprocessing(&$defaultvalues) {
         global $DB;
-        xdebug_break();
+        return;
         $id = optional_param('id', 0, PARAM_INT);
         $prompt = $DB->get_record('assignfeedback_aif', ['assignment' => $id]);
         $defaultvalues['assignfeedback_aif_prompt'] = $prompt->prompt;

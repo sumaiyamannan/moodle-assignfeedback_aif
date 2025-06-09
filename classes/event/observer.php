@@ -35,7 +35,6 @@ class observer {
 
         public static function somefunc($event) {
             global $USER;
-            xdebug_break();
             $grade = '3.14';
             $teachercommenttext = 'This is FABULOUS!.';
             $data = new \stdClass();
