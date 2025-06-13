@@ -36,5 +36,5 @@ $string['prompt_help'] = 'Prompt that will be sent to the remote LLM (E.G ChatGP
 $string['prompt_setting'] = 'Analyse the grammar in this text';
 $string['prompt_text'] = 'The default prompt that will be added to a new instance';
 $string['processfeedbactask'] = 'Process feedback task';
-$string['taskprocessfeedback'] = 'Taskprocessfeedback';
-
+$string['processfeedbacktask'] = 'Taskprocessfeedback';
+$string['taskprocessfeedbackrubric'] = 'Taskprocessfeedbackrubric';

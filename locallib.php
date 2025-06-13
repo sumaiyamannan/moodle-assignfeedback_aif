@@ -235,9 +235,21 @@ class assign_feedback_aif extends assign_feedback_plugin {
      */
     public function view_summary(stdClass $grade, & $showviewlink) {
         global $DB;
-        return 'view_summary function';
-        $feedback = $DB->get_record('assignfeedback_aif', ['grade' => $grade->id]);
-        return $feedback ? s($feedback->value) : '';
+        $sql = "SELECT aiff.feedback
+        FROM {assign} a
+        JOIN {course_modules} cm
+        ON cm.instance = a.id and cm.course = a.course
+        JOIN {assignfeedback_aif} aif
+        ON aif.assignment = cm.id
+        JOIN {assignfeedback_aif_feedback} aiff
+        ON aiff.aif = aif.id
+        JOIN {assign_submission} sub
+        ON sub.assignment = a.id AND aiff.submission = sub.id
+        WHERE a.id = :assignment AND sub.userid = :userid AND sub.latest = 1 AND sub.status = 'submitted'
+        ORDER BY aiff.id";
+        $params = ['assignment' => $grade->assignment, 'userid' => $grade->userid];
+        $record = $DB->get_record_sql($sql, $params);
+        return $record ? format_text($record->feedback) : '';
     }
 
     /**
