@@ -35,4 +35,13 @@ $tasks = [
         'month' => '*',
         'dayofweek' => '*',
     ],
+        [
+        'classname' => 'assignfeedback_aif\task\process_feedback_rubric',
+        'blocking' => 0,
+        'minute' => '*',
+        'hour' => '*',
+        'day' => '*',
+        'month' => '*',
+        'dayofweek' => '*',
+    ],
 ];
