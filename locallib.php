@@ -143,7 +143,6 @@ class assign_feedback_aif extends assign_feedback_plugin {
      */
     public function set_editor_text($name, $value, $gradeid) {
         global $DB;
-        xdebug_break();
         return 'set_editor_text function';
         if ($name === 'aif') {
             $feedback = $DB->get_record('assignfeedback_aif', ['grade' => $gradeid]);

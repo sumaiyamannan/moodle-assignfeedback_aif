@@ -63,7 +63,6 @@ class process_feedback extends \core\task\scheduled_task {
             'timecreated' => time(),
             'submission' => $assignment->subid,
           ];
-          xdebug_break();
           $DB->insert_record('assignfeedback_aif_feedback', $data);
         }
 

@@ -31,11 +31,7 @@ global $CFG;
 final class submission_test extends \advanced_testcase {
 
     public function test_submission() :void {
-        xdebug_break();
-
-
         $this->resetAfterTest();
-        xdebug_break();
         $course = $this->getDataGenerator()->create_course();
         $student = $this->getDataGenerator()->create_and_enrol($course, 'student');
         $generator = $this->getDataGenerator()->get_plugin_generator('mod_assign');

@@ -29,7 +29,7 @@ class aif {
 
     public function perform_request(string $prompt, string $purpose = 'feedback'): string {
             global $USER;
-            $manager = new \core_ai\manager();
+            $manager = \core\di::get(\core_ai\manager::class);
             $action = new \core_ai\aiactions\generate_text(
                 contextid: $this->contextid,
                 userid: $USER->id,
