@@ -26,7 +26,6 @@ namespace assignfeedback_aif;
  */
 global $CFG;
 
-use core\context\course;
 use core_ai\aiactions\generate_text;
 use core_ai\aiactions\summarise_text;
 require_once($CFG->dirroot . '/mod/assign/tests/generator.php');
@@ -39,7 +38,6 @@ final class process_feedback_test extends \advanced_testcase {
     public $assign;
     public $generator;
 
-
     public function setUp(): void{
         echo 'test_process_feedback';
         $this->resetAfterTest();
@@ -50,7 +48,6 @@ final class process_feedback_test extends \advanced_testcase {
         set_config('summarise_text', 1, 'aiprovider_openai');
 
     }
-
 
     public function test_execute() :void {
         $this->resetAfterTest();
@@ -74,6 +71,27 @@ final class process_feedback_test extends \advanced_testcase {
 
         $cm = get_coursemodule_from_instance('assign', $assign->id);
         $assignobj = new \mod_assign_testable_assign(\context_module::instance($cm->id), $cm, $this->course);
+        $this->setUser($this->student);
+
+        xdebug_break();
+        $submissiondata = [
+        'cmid' => $cm->id,
+        'course' => $this->course->id,
+        'userid' => $this->student->id,
+        'onlinetext' => '1',
+        'onlinetext_editor' => [
+                'text' => 'This is my assignment submission',
+                'format' => FORMAT_HTML,
+              ],
+         ];
+
+        $generator->create_submission($submissiondata);
+        xdebug_break();
+        $assignobj->submit_for_grading($this->student, $submissiondata);
+
+        $task = new \assignfeedback_aif\task\process_feedback();
+        $task->execute();
+
 
 
         $manager = \core\di::get(\core_ai\manager::class);
@@ -85,9 +103,6 @@ final class process_feedback_test extends \advanced_testcase {
         ];
 
     }
-    protected function run_task() {
-        $task = new \assignfeedback_aif\task\process_feedback();
-        $task->execute();
-    }
+
 
 }
