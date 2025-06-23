@@ -40,6 +40,23 @@ class process_feedback extends \core\task\scheduled_task {
      * Execute the scheduled task.
      */
     public function execute() {
+      /**
+       * Equivalent cli
+          SELECT  *
+          FROM phpu6_assign a
+          JOIN phpu6_course_modules cm
+          ON cm.instance = a.id
+          JOIN phpu6_assignfeedback_aif aif
+          ON aif.assignment = cm.id
+          JOIN phpu6_assign_submission sub
+          ON sub.assignment = a.id
+          JOIN phpu6_assignsubmission_onlinetext olt
+          ON olt.assignment = a.id
+          WHERE sub.status='submitted'\G;
+
+       *
+       */
+
         global $DB;
          $sql = "SELECT aif.id AS aifid, aif.prompt AS prompt,olt.onlinetext AS onlinetext, sub.id AS subid
                  FROM {assign} a
@@ -53,6 +70,7 @@ class process_feedback extends \core\task\scheduled_task {
                  ON olt.assignment = a.id
                  WHERE sub.status='submitted'";
         $assignments = $DB->get_records_sql($sql);
+        xdebug_break();
         $aif = new \assignfeedback_aif\aif(\context_system::instance()->id);
         foreach ($assignments as $assignment) {
           $prompt = $assignment->prompt . ' '.$assignment->onlinetext;
