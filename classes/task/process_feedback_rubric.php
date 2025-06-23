@@ -77,7 +77,7 @@ class process_feedback_rubric  extends \core\task\scheduled_task {
             $prompt = $assignment->prompt . ': ';
             foreach ($records as $record) {
                 $definition = $DB->get_field_sql("SELECT '- ' || string_agg(definition, ' - ')
-                FROM mdl_gradingform_rubric_levels WHERE criterionid = :rcid",
+                FROM {gradingform_rubric_levels} WHERE criterionid = :rcid",
                 ['rcid' => $record->id]);
                 $prompt .= " ". $record->description. " " . $definition;
             }
