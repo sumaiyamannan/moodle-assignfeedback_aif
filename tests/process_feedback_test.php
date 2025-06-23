@@ -63,7 +63,7 @@ final class process_feedback_test extends \advanced_testcase {
             'course' => $this->course->id,
             'assignsubmission_onlinetext_enabled' => 1,
             'assignfeedback_aif_enabled' => 1,
-            'assignfeedback_aif_prompt' => 'Analyse this text',
+            'assignfeedback_aif_prompt' => 'Analyse the English grammar',
 
         ];
         $generator = $this->getDataGenerator()->get_plugin_generator('mod_assign');
@@ -73,12 +73,11 @@ final class process_feedback_test extends \advanced_testcase {
         $assignobj = new \mod_assign_testable_assign(\context_module::instance($cm->id), $cm, $this->course);
         $this->setUser($this->student);
 
-        xdebug_break();
         $submissiondata = [
         'cmid' => $cm->id,
         'course' => $this->course->id,
         'userid' => $this->student->id,
-        'onlinetext' => '1',
+        'onlinetext' => 'Yesterday I go prk',
         'onlinetext_editor' => [
                 'text' => 'This is my assignment submission',
                 'format' => FORMAT_HTML,
