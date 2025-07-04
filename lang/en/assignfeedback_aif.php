@@ -38,3 +38,7 @@ $string['prompt_text'] = 'The default prompt that will be added to a new instanc
 $string['processfeedbactask'] = 'Process feedback task';
 $string['processfeedbacktask'] = 'Taskprocessfeedback';
 $string['taskprocessfeedbackrubric'] = 'Taskprocessfeedbackrubric';
+$string['privacy:aipath'] = 'AI Feedback';
+$string['privacy:metadata:assignmentid'] = 'Assignment ID';
+$string['privacy:metadata:aitext'] = 'AI Feedback text.';
+$string['privacy:metadata:tablesummary'] = 'This stores AI feedback made by the AI proivders as feedback for the student on their submission.';
