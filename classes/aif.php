@@ -15,7 +15,8 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace assignfeedback_aif;
-
+include "../pdfparser/vendor/autoload.php";
+require_once($CFG->libdir . '/filelib.php');
 /**
  * Class aif
  *
@@ -24,6 +25,7 @@ namespace assignfeedback_aif;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 use \stdClass;
+
 class aif {
     public  int $contextid;
 
@@ -45,7 +47,7 @@ class aif {
     }
 
     public function get_prompt(stdClass $assignment, string $gradingmethod): string {
-        global $DB;
+        global $DB, $CFG;
         // If feedback exists then skip.
         $count = $DB->count_records('assignfeedback_aif_feedback',
         ['aif'=>$assignment->aifid, 'submission' => $assignment->subid]);
@@ -73,7 +75,17 @@ class aif {
                 ['rcid' => $record->id]);
                 $prompt .= " ". $record->description. " " . $definition;
             }
-            $prompt .= " ".strip_tags($assignment->onlinetext);
+            // Get prompt from text submissions.
+            if ($onlinetext = $DB->get_field('assignsubmission_onlinetext',
+                'onlinetext', ['submission' => $assignment->subid] )) {
+                mtrace("Content from text submission added to the prompt.");
+                $prompt .= " ".strip_tags($onlinetext);
+            }
+            // Get prompt from files submissions.
+            if ($filetext = self::extract_text_files($assignment)) {
+                $prompt .= " ".strip_tags($filetext);
+            }
+            mtrace("Final prompt: ".$prompt);
             return $prompt;
         } else {
             $id = optional_param('id', 0, PARAM_INT);
@@ -81,4 +93,72 @@ class aif {
             return $prompt;
         }
     }
+
+
+    /**
+     * This function will extract text from PDF files.
+     *
+     * @param object $assignment
+     * @return string
+     */
+    protected static function extract_text_files($assignment) {
+        global $CFG;
+        $filetext = '';
+        if (isset($CFG->filedir)) {
+            $filedir = $CFG->filedir;
+        } else {
+            $filedir = $CFG->dataroot.'/filedir';
+        }
+        $fs = get_file_storage();
+        $converter = new \core_files\converter();
+        $contextid = $assignment->contextid;
+        $component = 'assignsubmission_file';
+        $filearea = 'submission_files';
+        $itemid = $assignment->subid;
+        $filepath = '/';
+        if ($files = $fs->get_area_files($contextid, $component,
+            $filearea, $itemid, 'itemid, filepath, filename', false)) {
+            foreach($files as $file) {
+                if ($file instanceof \stored_file) {
+                    $loadfile = $file;
+                    print "<pre>file";print_r($file);print"</pre>";
+                    $mimetype = $file->get_mimetype();
+                    mtrace("mimetype: ".$mimetype);
+                    if ($mimetype === "image/jpeg" || $mimetype === '') {
+                        break;
+                    }
+                    if ($mimetype !== 'application/pdf') {
+                        $conversion = $converter->start_conversion($file, 'pdf');
+                        mtrace("Start process to convert files to PDF");
+                        if ($conversion->get('status') === \core_files\conversion::STATUS_COMPLETE) {
+                            if (!$convertedfile = $conversion->get_destfile()) {
+                                break;
+                            }
+                            print "<pre>convertedfile";print_r($convertedfile);print"</pre>";
+                            $loadfile = $convertedfile;
+                        } else {
+                            mtrace("File could not be converted to PDF");
+                        }
+                    }
+                }
+                $filedirsub = substr($loadfile->get_contenthash(), 0, 2);
+                $filedirsubsub = substr($loadfile->get_contenthash(), 2, 2);
+                $filepath = $filedir . '/' . $filedirsub .'/'. $filedirsubsub  . '/' .$loadfile->get_contenthash();
+                if (!file_exists($filepath)) {
+                    mtrace("File does not exists on server.");
+                    break;
+                }
+                mtrace("filepath: ".$filepath);
+                // Parse PDF file and build necessary objects.
+                $parser = new \Smalot\PdfParser\Parser();
+                $pdf = $parser->parseFile($filepath);
+                $filetext .= " ". $pdf->getText();
+                mtrace("Content from file submissions added to the prompt.");
+                mtrace("filetext: ".$filetext);
+                return $filetext;
+            }
+        }
+    }
+
+
 }
