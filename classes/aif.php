@@ -121,7 +121,6 @@ class aif {
             foreach($files as $file) {
                 if ($file instanceof \stored_file) {
                     $loadfile = $file;
-                    print "<pre>file";print_r($file);print"</pre>";
                     $mimetype = $file->get_mimetype();
                     mtrace("mimetype: ".$mimetype);
                     if ($mimetype === "image/jpeg" || $mimetype === '') {
@@ -134,7 +133,6 @@ class aif {
                             if (!$convertedfile = $conversion->get_destfile()) {
                                 break;
                             }
-                            print "<pre>convertedfile";print_r($convertedfile);print"</pre>";
                             $loadfile = $convertedfile;
                         } else {
                             mtrace("File could not be converted to PDF");
@@ -148,13 +146,11 @@ class aif {
                     mtrace("File does not exists on server.");
                     break;
                 }
-                mtrace("filepath: ".$filepath);
                 // Parse PDF file and build necessary objects.
                 $parser = new \Smalot\PdfParser\Parser();
                 $pdf = $parser->parseFile($filepath);
                 $filetext .= " ". $pdf->getText();
                 mtrace("Content from file submissions added to the prompt.");
-                mtrace("filetext: ".$filetext);
                 return $filetext;
             }
         }
