@@ -45,3 +45,7 @@ $string['batchoperationconfirmdeletefeedbackai'] = 'Delete AI feedback for one o
 $string['batchoperationdeletefeedbackai'] = 'Delete AI feedback';
 $string['deletefeedbackai'] = 'Delete AI feedback';
 $string['processfeedbackainotify'] = 'Please wait for the cron to run to process the AI Feedback';
+$string['privacy:aipath'] = 'AI Feedback';
+$string['privacy:metadata:assignmentid'] = 'Assignment ID';
+$string['privacy:metadata:aitext'] = 'AI Feedback text.';
+$string['privacy:metadata:tablesummary'] = 'This stores AI feedback made by the AI proivders as feedback for the student on their submission.';
