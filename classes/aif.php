@@ -68,10 +68,10 @@ class aif {
             mtrace("Assignment {$assignment->aid} submission {$assignment->subid}");
             $prompt = $assignment->prompt . ': ';
             foreach ($records as $record) {
-                $definition = $DB->get_field_sql("SELECT '- ' || string_agg(definition, ' - ')
-                FROM {gradingform_rubric_levels} WHERE criterionid = :rcid",
-                ['rcid' => $record->id]);
-                $prompt .= " ". $record->description. " " . $definition;
+                $levels = $DB->get_records('gradingform_rubric_levels', ['criterionid' => $record->id], 'score ASC');
+                $definitions = array_map(function($level) { return $level->definition; }, $levels);
+                $definition = '- ' . implode(' - ', $definitions);
+                $prompt .= " " . $record->description . " " . $definition;
             }
             $prompt .= " ".strip_tags($assignment->onlinetext);
             return $prompt;
